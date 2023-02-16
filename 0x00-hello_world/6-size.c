@@ -1,6 +1,9 @@
 #include <stdio.h>
-
-/**The following code print out the sizes of various elements */
+/**
+* main - Entry point
+* Description:
+* Return: Always 0 (Success)
+*/
 int main(void)
 {
 	printf("Size of a char: %ld byte(s)\n", sizeof(char));
