@@ -15,7 +15,7 @@ int main(void)
 		putchar(c);
 	}
 
-	for (char c = 'A'; c <= 'Z'; c++)
+	for (c = 'A'; c <= 'Z'; c++)
 	{
 		/* main-print the alphabet*/
 		putchar(c);
