@@ -20,6 +20,6 @@ int main(void)
 		/* main-print the alphabet*/
 		putchar(c);
 	}
-	putchar("\n");
+	putchar('\n');
 	return (0);
 }
