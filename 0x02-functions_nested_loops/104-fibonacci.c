@@ -3,7 +3,6 @@
 * main - Prints the first 98 Fibonacci numbers
 * Return: Always 0.
 */
-
 int main(void)
 {
 	int c, boolean, boolean2;
@@ -43,6 +42,6 @@ int main(void)
 		}
 		if (((n1 + n2) < 0) && boolean == 1)
 			boolean = 0;
-	return (0);
 	}
+	return (0);
 }
