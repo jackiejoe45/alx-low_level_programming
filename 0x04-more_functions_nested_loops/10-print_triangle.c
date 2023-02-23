@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "main.h"
-/*
- *@print_line:print a line of n length
- *
- *Return :Always 0
+/**
+ * print_line - print a line of n length
+ * @n: parameter
+ * Return :Always 0
  */
 void print_line(int n)
 {

@@ -1,10 +1,9 @@
 #include <stdio.h>
 #include "main.h"
-/*
-   *
-   *_isdigit - checks digit stauts of input
-   *
-   *Return: 1 if true,0 if not
+/**
+ * _isdigit - checks digit stauts of input
+ * @c: integer to be chacked
+ * Return: 1 if true,0 if not
  */
 int _isdigit(int c)
 {

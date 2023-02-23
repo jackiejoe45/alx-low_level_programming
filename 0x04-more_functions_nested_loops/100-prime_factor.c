@@ -16,7 +16,7 @@ int main(void)
 		largest_prime_factor = 2;
 		num /= 2;
 	}
-	
+
 	for (i = 3; i <= sqrt(num); i += 2)
 	{
 		while (num % i == 0)

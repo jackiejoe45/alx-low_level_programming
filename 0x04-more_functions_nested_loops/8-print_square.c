@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "main.h"
-/*
- *@print_square:creates a square of # using n as size
- *
- *Return: Always 0
+/**
+ * print_square - creates a square of # using n as size
+ * @size: parameter
+ * Return: Always 0
  */
 void print_square(int size)
 {

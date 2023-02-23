@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include "main.h"
-/*
-   *@more_numbers : print 0 -14 ten times
-   *
-   *Retun :Always 0
-   */
+/**
+ * more_numbers - print 0 -14 ten times
+ *
+ * Retun :Always 0
+ */
 void more_numbers(void)
 {
 	int i, j;
