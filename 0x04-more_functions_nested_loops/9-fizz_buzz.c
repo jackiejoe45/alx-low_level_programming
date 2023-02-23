@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "main.h"
 /**
  * main - prints from 1 to 100,Fizz instead of multiples of 3
  *, buzz instead of multiples of 5 and FizzBuzz instead of
@@ -31,3 +32,4 @@ int main(void)
 	}
 	return (0);
 }
+

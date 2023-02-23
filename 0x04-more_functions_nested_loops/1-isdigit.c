@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "main.h"
 /*
    *
    *_isdigit - checks digit stauts of input

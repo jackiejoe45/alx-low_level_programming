@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include "main.h"
 /**
  * main - find prime factors
  * Return: Always 0

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "main.h"
 /**
   * _isupper - returns wether character is uppercase
   * @c: input charater

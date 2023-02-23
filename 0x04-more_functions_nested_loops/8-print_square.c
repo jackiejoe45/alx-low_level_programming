@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "main.h"
 /*
  *@print_square:creates a square of # using n as size
  *
