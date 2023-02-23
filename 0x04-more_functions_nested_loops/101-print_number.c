@@ -7,7 +7,7 @@
  */
 void print_number(int n)
 {
-	int i, j, divisor, digit;
+	int divisor, digit;
 
 	if (n == 0)
 	{
@@ -33,5 +33,4 @@ void print_number(int n)
 			_putchar(digit + '0');
 		}
 	}
-	return (0);
 }
