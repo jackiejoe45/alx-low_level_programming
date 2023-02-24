@@ -23,6 +23,5 @@ void print_line(int n)
 		_putchar('\n');
 	}
 	else
-		print('\n');
-	return (0);
+		_putchar('\n');
 }
