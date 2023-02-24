@@ -5,7 +5,7 @@
  * @n: parameter
  * Return :Always 0
  */
-void print_line(int n)
+void print_diagonal(int n)
 {
 	int i, j;
 
