@@ -18,7 +18,7 @@ int _atoi(char *s)
 		}
 		else if (*s >= '0' && *s <= '9')
 		{
-			igit = *s - '0';
+			digit = *s - '0';
 			result = result * 10 + digit;
 		}
 		else if (result > 0)
