@@ -6,9 +6,9 @@
   */
 int _atoi(char *s)
 {
-	long sign = 1;
-	long result = 0;
-	long digit;
+	double sign = 1;
+	double result = 0;
+	double digit;
 
 	while (*s != '\0')
 	{
