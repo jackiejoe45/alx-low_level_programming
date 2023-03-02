@@ -8,5 +8,19 @@
   */
 char *_strcat(char *dest, char *src);
 {
-	return (0);
+	char *result = dest;
+
+	while (*dest)
+	{
+		dest++;
+	}
+	while (*src)
+	{
+		*dest = *src;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+
+	return (result);
 }
