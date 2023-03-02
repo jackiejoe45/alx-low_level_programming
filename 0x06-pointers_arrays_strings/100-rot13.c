@@ -14,12 +14,12 @@ char *rot13(char *str)
 	{
 		for (i = 0; i < 13; i++)
 		{
-			if (*ptr >= 'a' && *ptr < 'n' || *ptr >= 'A' && *ptr < 'N')
+			if ((*ptr >= 'a' && *ptr < 'n' )||( *ptr >= 'A' && *ptr < 'N'))
 			{
 				*ptr += 13;
 				break;
 			}
-			else if (*ptr >= 'n' && *ptr <= 'z' || *ptr >= 'N' && *ptr <= 'Z')
+			else if ((*ptr >= 'n' && *ptr <= 'z') || (*ptr >= 'N' && *ptr <= 'Z'))
 			{
 				*ptr -= 13;
 				break;

@@ -19,7 +19,7 @@ char *infinite_add(char *n1, char *n2, char *r, int size_r)
 	{
 		return (0);
 	}
-	r[max_len + 1] = '\0';
+	r[max_len] = '\0';
 	for (int i = 0; i < max_len; i++)
 	{
 		int d1 = (i < len1) ? n1[len1 - i - 1] - '0' : 0;

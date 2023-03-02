@@ -7,7 +7,7 @@
   * @n:number of bytes
   * Return: char type
   */
-char *_strncat(char *dest, char *src, int n);
+char *_strncat(char *dest, char *src, int n)
 {
 	char *result = dest;
 
