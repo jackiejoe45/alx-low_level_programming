@@ -10,6 +10,6 @@
 void set_string(char **s, char *to)
 {
 	int len = strlen(to);
-	*s = (char *) malloc(len+1);
+	*s = (char *) malloc(len + 1);
 	strcpy(*s, to);
 }
