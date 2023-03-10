@@ -2,11 +2,16 @@
 /**
   * main - prints its name
   * @argc: arguments
-  * @argv:arguments
+  * @argv: arguments
   * Return: Always 0 (Success)
   */
 int main(int argc, char *argv[])
 {
-	printf("%s\n", argv[0]);
+	int i;
+	
+	for (i = 0; i < argc; i++)
+	{
+		printf("Argument %d: %s\n", i, argv[i]);
+	}
 	return (0);
 }
