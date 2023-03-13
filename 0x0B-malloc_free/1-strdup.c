@@ -6,10 +6,10 @@
   */
 char *_strdup(char *str)
 {
-	int i, len1;
+	int i;
+	int len1 = strlen(str);
 	char *s = (char *) malloc(sizeof(char) * len1);
 
-	len1 = strlen(str);
 	if (str == NULL)
 	{
 		return (NULL);
