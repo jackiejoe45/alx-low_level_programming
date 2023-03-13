@@ -106,6 +106,23 @@ char **strtow(char *str)
 		words[word_index][word_end - word_start + 1] = '\0';
 		word_index++;
 	}
+	if (in_word)
+	{
+		word_end = strlen(str) - 1;
+		words[word_index] = malloc((word_end - word_start + 2) * sizeof(char));
+		if (words[word_index] == NULL)
+		{
+			for (j = 0; j < word_index; j++)
+			{
+				free(words[j]);
+			}
+			free(words);
+			return (NULL);
+		}
+		strncpy(words[word_index], &str[word_start], word_end - word_start + 1);
+		words[word_index][word_end - word_start + 1] = '\0';
+		word_index++;
+	}
 	words[word_index] = NULL;
 	return (words);
 }
