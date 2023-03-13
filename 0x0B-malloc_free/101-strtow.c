@@ -35,6 +35,7 @@ char **strtow(char *str)
 	int word_count = 0;
 	char *word;
 	char *saveptr;
+	int i = 0;
 
 	if (str == NULL || *str == '\0')
 	{
@@ -46,7 +47,6 @@ char **strtow(char *str)
 	{
 		return (NULL);
 	}
-	int i = 0;
 
 	word = strtok_r(str, DELIM, &saveptr);
 	while (word != NULL)
