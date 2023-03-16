@@ -1,99 +1,104 @@
 #include "main.h"
 /**
-  * print_number - prints
-  * @nums: numbers
-  * @len: length
+  * is_digit - checks if digit
+  * @c: character to check
+  * Return: int 0 or 1
+  */
+int is_digit(char c)
+{
+  return (c >= '0' && c <= '9');
+}
+/**
+  * print_error - print
+  * Return:none
+  */
+void print_error()
+{
+	printf("Error\n");
+	exit(98);
+}
+
+/**
+  * parse_number -  parses a number
+  * @str: string
+  * Return: int
+  */
+int parse_number(char *str)
+{
+	int num = 0;
+	
+	while (*str)
+	{
+		if (!is_digit(*str))
+		{
+			print_error();
+		}
+		num = num * 10 + (*str - '0');
+		str++;
+	}
+	return (num);
+}
+/**
+  * count_digits - counts digits
+  * @num: number
+  * Return: int
+  */
+int count_digits(int num)
+{
+	int count = 0;
+	while (num > 0)
+	{
+		count++;
+		num /= 10;
+	}
+	return (count);
+}
+/**
+  * print_number - prints number
+  * @num: number
   * Return: none
   */
-void print_number(int *nums, int len)
+void print_number(int num)
 {
-	int i, j;
-
-	for (i = len - 1; i >= 0; i--)
-	{
-		if (nums[i] != 0)
-			break;
-	}
-	if (i < 0)
+	if (num == 0)
 	{
 		_putchar('0');
-		_putchar('\n');
 		return;
 	}
-	for (j = i; j >= 0; j--)
+	int num_digits = count_digits(num);
+	char *str = malloc(num_digits + 1);
+	
+	if (str == NULL)
 	{
-		_putchar(nums[j] + '0');
+		printf("Error: malloc failed\n");
+		exit(98);
 	}
+	str[num_digits] = '\0';
+	while (num > 0)
+	{
+		str[--num_digits] = '0' + (num % 10);
+		num /= 10;
+	}
+	printf("%s", str);
+	free(str);
+}
+/**
+  * main - main file
+  * @argc: args
+  * @argv: kwargs
+  * Return: int
+  */
+int main(int argc, char **argv)
+{
+	if (argc != 3)
+	{
+		print_error();
+	}
+	int num1 = parse_number(argv[1]);
+	int num2 = parse_number(argv[2]);
+	int result = num1 * num2;
+	
+	print_number(result);
 	_putchar('\n');
-}
-/**
-  * parse_number - parses number
-  * @str: string arr
-  * @nums: numbers
-  * @len: length
-  * Return: integer
-  */
-int parse_number(char *str, int *nums, int len)
-{
-	int i, j, k;
-
-	for (i = 0; i < len; i++)
-	{
-		nums[i] = 0;
-	}
-	for (i = 0; str[i] != '\0'; i++)
-	{
-		if (str[i] < '0' || str[i] > '9')
-		{
-			return (-1);
-		}
-		nums[len - 1 - i] = str[i] - '0';
-	}
 	return (0);
-}
-/**
-  * add_numbers - adds numbers
-  * @num1: number 1
-  * @num2: number 2
-  * @result: result
-  * @len: length
-  * Return: none
-  */
-void add_numbers(int *num1, int *num2, int *result, int len)
-{
-	int i, carry = 0;
-
-	for (i = 0; i < len; i++)
-	{
-		result[i] = num1[i] + num2[i] + carry;
-		carry = result[i] / 10;
-		result[i] %= 10;
-	}
-}
-/**
-  * multiply_numbers - multiplies
-  * @num1: number 1
-  * @num2: number 2
-  * @len1: length of 1
-  * @len2: length of 2
-  * @result: result
-  * Return: void
-  */
-void multiply_numbers(int *num1, int *num2, int len1, int len2, int *result)
-{
-	int i, j;
-
-	for (i = 0; i < len1 + len2; i++)
-	{
-		result[i] = 0;
-	}
-	for (i = 0; i < len1; i++)
-	{
-		for (j = 0; j < len2; j++)
-		{
-			result[i + j] += num1[i] * num2[j];
-			result[i + j + 1] += result[i + j] / 10;
-			result[i + j] %= 10;
-		}
-	}
 }
