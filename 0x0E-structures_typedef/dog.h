@@ -3,6 +3,7 @@
 #endif /* DOG_H */
 #include <stddef.h>
 #include <stdio.h>
+#include <stdlib.h>
 /**
  * struct dog - a struct of a dogs basic details
  * @name: name of dog(String)
