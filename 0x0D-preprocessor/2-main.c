@@ -1,8 +1,8 @@
-#include <stdlib.h>
+#include <stdio.h>
 /**
- * main - returns the file that was compiled
- * Return - Always Success(0);
- */
+  * main - prints the name of origin file
+  * Return - Always Success(0)
+  */
 int main(void)
 {
 	printf(“%s\n”, FILE);
