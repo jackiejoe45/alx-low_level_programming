@@ -1,11 +1,13 @@
 ## ALX Low Level Programming
-<p>Language : **C** </p>
-<p>
- Folders contain lessons on various *C* topics
+<p>Language : __C__ 
 </p>
-### 0x00-hello-world
+<p>
+ Folders contain lessons on various _C_ topics
+</p>
+
+# 0x00-hello-world
 <p> </p>
-### 0x01-variables-if-else-while
+## 0x01-variables-if-else-while
 <p> </p>
 ### 0x02-functions-nested-loops
 <p> </p>
@@ -17,7 +19,7 @@
 <p> </p>
 ### 0x06-pointers-arrays-strings  
 <p> </p>
-##3 0x07-pointers-arrays-strings  
+### 0x07-pointers-arrays-strings  
 <p> </p>
 ### 0x08-recursion                
 <p> </p>
