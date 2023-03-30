@@ -1,8 +1,18 @@
+#include <stdio.h>
 section .data
-    hello: db 'Hello, Holberton', 0Ah
+    msg db "Hello, Holberton", 0Ah, 0
+
 section .text
-    global _start
-_start:
-    ; set up stack and other necessary things
-    ; call printf with the address of hello string
-    ; clean up and exit
+    global main
+
+    extern printf
+
+main:
+    push msg
+    push qword 0
+    mov  rax, 0
+    call printf
+    add  rsp, 16
+    xor  eax, eax
+    ret
+
