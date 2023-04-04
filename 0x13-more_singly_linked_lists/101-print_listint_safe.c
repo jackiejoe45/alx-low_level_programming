@@ -9,27 +9,52 @@ size_t print_listint_safe(const listint_t *head)
 	const listint_t *slow = head;
 	const listint_t *fast = head;
 	size_t count = 0;
-
+	int loop_detected = 0;
+	hash_table_t *ht;
+	hash_node_t *node;
+	
+	ht = hash_table_create(1024);
+	if (ht == NULL)
+		exit(1);
+	
 	while (fast != NULL && fast->next != NULL)
 	{
-		printf("[%p] %d\n", (void *)slow, slow->n);
-		count++;
+		if (hash_table_set(ht, (void *)slow, "1") == 0)
+		{
+			printf("[%p] %d\n", (void *)slow, slow->n);
+			count++;
+		}
 		slow = slow->next;
 		fast = fast->next->next;
 		if (slow == fast)
 		{
-			printf("[%p] %d\n", (void *)slow, slow->n);
-			count++;
+			loop_detected = 1;
 			break;
 		}
 	}
-	while (head != slow)
+	
+	if (loop_detected)
 	{
-		printf("[%p] %d\n", (void *)head, head->n);
+		printf("[%p] %d\n", (void *)slow, slow->n);
 		count++;
-		head = head->next;
+		for (node = ht->array[hash_table_get_node_index(ht, (void *)slow)];
+				node != NULL; node = node->next)
+		{
+			printf("[%p] %d\n", node->key, ((listint_t *)node->key)->n);
+			count++;
+			if (node->key == slow)
+				break;
+		}
+		printf("...\n");
 	}
-	printf("[%p] %d\n", (void *)head, head->n);
-	count++;
+	for (; head != NULL && !loop_detected; head = head->next)
+	{
+		if (hash_table_set(ht, (void *)head, "1") == 0)
+        {
+            printf("[%p] %d\n", (void *)head, head->n);
+            count++;
+        }
+	}
+	hash_table_delete(ht);
 	return (count);
 }
