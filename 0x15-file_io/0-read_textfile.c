@@ -26,7 +26,7 @@ ssize_t read_textfile(const char *filename, size_t letters)
 	}
 	lseek(fd, 0, SEEK_SET);
 	nread = 0;
-	while (nread < min(letters, (size_t)file_size))
+	while (nread < min_t(size_t, letters, (size_t)file_size))
 	{
 		n = read(fd, buf, sizeof(buf));
 		if (n == -1)
