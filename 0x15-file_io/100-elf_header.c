@@ -39,7 +39,7 @@ int open_file(const char *filename, int flags, mode_t mode)
   */
 void copy_file(const char *from_filename, const char *to_filename)
 {
-	int fd_from = open_file(from_filename, O_RDONLY);
+	int fd_from = open_file(from_filename, O_RDONLY, 0);
 	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 
 	char buf[BUF_SIZE];
