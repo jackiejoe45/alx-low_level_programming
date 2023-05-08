@@ -1,92 +1,91 @@
+#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
-#include <elf.h>
+#include <unistd.h>
+#define BUF_SIZE 1024
 /**
- * read_elf_header - reads the ELF header of an ELF file.
- * @fd: the file descriptor of the ELF file.
- * @header: a pointer to an Elf64_Ehdr struct where the header will be stored.
- */
-void read_elf_header(int fd, Elf64_Ehdr *header)
+  * print_usage_and_exit - as it says
+  */
+void print_usage_and_exit(void)
 {
-	if (read(fd, header, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr))
+	dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+	exit(97);
+}
+
+/**
+  * open_file - opens the file with flags and mode
+  * @filename: name of file
+  * @flags: flags used
+  * @mode: mode to open file
+  * Return: file descriptor
+  */
+int open_file(const char *filename, int flags, mode_t mode)
+{
+	int fd = open(filename, flags, mode);
+
+	if (fd == -1)
 	{
-		perror("read");
+		dprintf(STDERR_FILENO, "Error: Can't open file %s\n", filename);
 		exit(98);
 	}
+	return (fd);
 }
 
 /**
- * validate_elf_file - validates that a given file is an ELF file.
- * @header: a pointer to an Elf64_Ehdr struct that contains the header of an ELF file.
- */
-void validate_elf_file(Elf64_Ehdr *header)
+  * copy_file - copies a files
+  * @from_filename: source
+  * @to_filename: destination
+  */
+void copy_file(const char *from_filename, const char *to_filename)
 {
-	if (header->e_ident[EI_MAG0] != ELFMAG0 || header->e_ident[EI_MAG1] != ELFMAG1
-			|| header->e_ident[EI_MAG2] != ELFMAG2 || header->e_ident[EI_MAG3] != ELFMAG3)
+	int fd_from = open_file(from_filename, O_RDONLY);
+	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+
+	char buf[BUF_SIZE];
+	ssize_t n_read, n_written;
+
+	while ((n_read = read(fd_from, buf, BUF_SIZE)) > 0)
 	{
-		fprintf(stderr, "Error: not an ELF file\n");
+		n_written = write(fd_to, buf, n_read);
+		if (n_written != n_read)
+		{
+			dprintf(STDERR_FILENO, "Error: Failed to write to file %s\n", to_filename);
+			exit(99);
+		}
+	}
+
+	if (n_read < 0)
+	{
+		dprintf(STDERR_FILENO, "Error:Failed to read from file %s\n", from_filename);
 		exit(98);
 	}
+
+	if (close(fd_from) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", from_filename);
+		exit(100);
+	}
+
+	if (close(fd_to) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", to_filename);
+		exit(100);
+	}
 }
 
 /**
- * display_elf_header - displays the contents of an ELF header.
- * @header: a pointer to an Elf64_Ehdr struct that contains the header.
+ * main - program that copies the content of a file to another file
+ * @argc: number of arguments
+ * @argv: array of arguments
+ * Return: 0 on success, or error code on failure
  */
-void display_elf_header(Elf64_Ehdr *header)
+int main(int argc, char **argv)
 {
-	int i;
-
-	printf("Magic:   ");
-	for (i = 0; i < EI_NIDENT; i++)
+	if (argc != 3)
 	{
-		printf("%02x ", header->e_ident[i]);
+		print_usage_and_exit();
 	}
-	printf("\nClass:                             ");
-	printf("%s\n", header->e_ident[EI_CLASS] == ELFCLASS64 ? "ELF64" : "ELF32");
-	printf("Data:                              ");
-
-	printf("%s\n", header->e_ident[EI_DATA] == ELFDATA2LSB ? "2's complement, little endian" : "2's complement, big endian");
-	printf("Version:                           ");
-	printf("%u\n", header->e_ident[EI_VERSION]);
-	printf("OS/ABI:                            ");
-	printf("%u\n", header->e_ident[EI_OSABI]);
-	printf("ABI Version:                       ");
-	printf("%u\n", header->e_ident[EI_ABIVERSION]);
-	printf("Type:                              ");
-	printf("%u\n", header->e_type);
-	printf("Entry point address:               ");
-	printf("%#010x\n", (unsigned int)header->e_entry);
-}
-
-/**
- * main - entry point of the program.
- * @argc: the number of command-line arguments.
- * @argv: an array of strings containing the command-line arguments.
- * Return: 0 on success, or 98 if there was an error.
- */
-int main(int argc, char *argv[])
-{
-	int fd;
-	Elf64_Ehdr header;
-
-	if (argc != 2)
-	{
-		fprintf(stderr, "Usage: elf_header elf_filename\n");
-		return (98);
-	}
-	fd = open(argv[1], O_RDONLY);
-	if (fd < 0)
-	{
-		perror("open");
-		return (98);
-	}
-	read_elf_header(fd, &header);
-	validate_elf_file(&header);
-	display_elf_header(&header);
-	close(fd);
+	copy_file(argv[1], argv[2]);
 	return (0);
 }
-
