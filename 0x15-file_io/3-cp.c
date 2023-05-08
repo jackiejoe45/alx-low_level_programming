@@ -18,7 +18,7 @@ void print_usage_and_exit(void)
 /**
   * open_file - opens the file with flags and mode
   * @filename: name of file
-  * @flags: flags used
+  * @flags: flags
   * @mode: mode to open file
   * Return: file descriptor
   */
@@ -41,8 +41,8 @@ int open_file(const char *filename, int flags, mode_t mode)
   */
 void copy_file(const char *from_filename, const char *to_filename)
 {
-	int fd_from = open_file(from_filename, O_RDONLY);
-	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	int fd_from = open_file(from_filename, O_RDONLY, O_RDONLY);
+	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 664);
 
 	char buf[BUF_SIZE];
 	ssize_t n_read, n_written;

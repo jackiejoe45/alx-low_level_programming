@@ -1,5 +1,5 @@
 #include "main.h"
-#define min(a, b) (((a) < (b)) ? (size_t)(a) : (size_t)(b))
+#define min_t(a, b, type) (((type)(a) < (type)(b)) ? (type)(a) : (type)(b))
 /**
  * read_textfile - reads the text from a file and prints it to POSIX stdout
  * @filename: name of file
@@ -26,7 +26,7 @@ ssize_t read_textfile(const char *filename, size_t letters)
 	}
 	lseek(fd, 0, SEEK_SET);
 	nread = 0;
-	while (nread < min_t(size_t, letters, (size_t)file_size))
+	while (nread < min_t(letters, (size_t)file_size, size_t))
 	{
 		n = read(fd, buf, sizeof(buf));
 		if (n == -1)
