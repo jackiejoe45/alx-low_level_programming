@@ -11,8 +11,8 @@
   */
 void print_usage_and_exit(void)
 {
-    dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-    exit(97);
+	dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
+	exit(97);
 }
 
 /**
@@ -22,57 +22,58 @@ void print_usage_and_exit(void)
   * @mode: mode to open file
   * Return: file descriptor
   */
-int open_file(const char* filename, int flags, mode_t mode)
+int open_file(const char *filename, int flags, mode_t mode)
 {
-    int fd = open(filename, flags, mode);
-    if (fd == -1)
-    {
-        dprintf(STDERR_FILENO, "Error: Can't open file %s\n", filename);
-        exit(98);
-    }
-    return fd;
+	int fd = open(filename, flags, mode);
+
+	if (fd == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't open file %s\n", filename);
+		exit(98);
+	}
+	return (fd);
 }
 
 /**
   * copy_file - copies a files
-  * @from_filename - source
-  * @to_filename - destination
+  * @from_filename: source
+  * @to_filename: destination
   */
-void copy_file(const char* from_filename, const char* to_filename)
+void copy_file(const char *from_filename, const char *to_filename)
 {
-    int fd_from = open_file(from_filename, O_RDONLY);
-    int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	int fd_from = open_file(from_filename, O_RDONLY);
+	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
 
-    char buf[BUF_SIZE];
-    ssize_t n_read, n_written;
+	char buf[BUF_SIZE];
+	ssize_t n_read, n_written;
 
-    while ((n_read = read(fd_from, buf, BUF_SIZE)) > 0)
-    {
-        n_written = write(fd_to, buf, n_read);
-        if (n_written != n_read)
-        {
-            dprintf(STDERR_FILENO, "Error: Failed to write to file %s\n", to_filename);
-            exit(99);
-        }
-    }
+	while ((n_read = read(fd_from, buf, BUF_SIZE)) > 0)
+	{
+		n_written = write(fd_to, buf, n_read);
+		if (n_written != n_read)
+		{
+			dprintf(STDERR_FILENO, "Error: Failed to write to file %s\n", to_filename);
+			exit(99);
+		}
+	}
 
-    if (n_read < 0)
-    {
-        dprintf(STDERR_FILENO, "Error: Failed to read from file %s\n", from_filename);
-        exit(98);
-    }
+	if (n_read < 0)
+	{
+		dprintf(STDERR_FILENO, "Error:Failed to read from file %s\n", from_filename);
+		exit(98);
+	}
 
-    if (close(fd_from) == -1)
-    {
-        dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", from_filename);
-        exit(100);
-    }
+	if (close(fd_from) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", from_filename);
+		exit(100);
+	}
 
-    if (close(fd_to) == -1)
-    {
-        dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", to_filename);
-        exit(100);
-    }
+	if (close(fd_to) == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", to_filename);
+		exit(100);
+	}
 }
 
 /**
@@ -83,12 +84,10 @@ void copy_file(const char* from_filename, const char* to_filename)
  */
 int main(int argc, char **argv)
 {
-    if (argc != 3)
-    {
-        print_usage_and_exit();
-    }
-
-    copy_file(argv[1], argv[2]);
-
-    return 0;
+	if (argc != 3)
+	{
+		print_usage_and_exit();
+	}
+	copy_file(argv[1], argv[2]);
+	return (0);
 }
