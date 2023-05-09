@@ -1,91 +1,158 @@
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
 #include <unistd.h>
-#define BUF_SIZE 1024
+#include <fcntl.h>
+#include <string.h>
+#include <elf.h>
+
 /**
-  * print_usage_and_exit - as it says
-  */
-void print_usage_and_exit(void)
+ * print_error - returns error mssge
+ * @msg: type of error
+ */
+void print_error(char *msg)
 {
-	dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-	exit(97);
+	fprintf(stderr, "Error: %s\n", msg);
+	exit(98);
 }
 
 /**
-  * open_file - opens the file with flags and mode
-  * @filename: name of file
-  * @flags: flags used
-  * @mode: mode to open file
-  * Return: file descriptor
-  */
-int open_file(const char *filename, int flags, mode_t mode)
+ * print_elf_header - as it says
+ * @filename: name of file
+ */
+void print_elf_header(char *filename)
 {
-	int fd = open(filename, flags, mode);
+	int fd, ret, i;
+	Elf64_Ehdr ehdr;
+	char magic[5];
 
-	if (fd == -1)
+	memset(&ehdr, 0, sizeof(ehdr));
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't open file %s\n", filename);
-		exit(98);
+		print_error("Could not open file");
 	}
-	return (fd);
+	ret = read(fd, &ehdr, sizeof(ehdr));
+	if (ret < 0)
+	{
+		print_error("Could not read ELF header");
+	}
+	memcpy(magic, ehdr.e_ident, 4);
+	magic[4] = '\0';
+	if (strcmp(magic, ELFMAG) != 0)
+	{
+		print_error("Not an ELF file");
+	}
+	printf("ELF Header:\n");
+	printf("  Magic:   ");
+	for (i = 0; i < EI_NIDENT; i++)
+	{
+		printf("%02x ", ehdr.e_ident[i]);
+	}
+	printf("\n");
+	if (ehdr.e_ident[EI_CLASS] == ELFCLASS32)
+	{
+		printf("  Class:                           ELF32\n");
+	}
+	else
+	{
+		printf("  Class:                           ELF64\n");
+	}
+	close(fd);
 }
 
 /**
-  * copy_file - copies a files
-  * @from_filename: source
-  * @to_filename: destination
-  */
-void copy_file(const char *from_filename, const char *to_filename)
+ * print_elf_header_cont - continued
+ * @filename: name of file
+ */
+void print_elf_header_cont(char *filename)
 {
-	int fd_from = open_file(from_filename, O_RDONLY, 0);
-	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	int fd;
+	Elf64_Ehdr ehdr;
 
-	char buf[BUF_SIZE];
-	ssize_t n_read, n_written;
+	memset(&ehdr, 0, sizeof(ehdr));
+	fd = open(filename, O_RDONLY);
 
-	while ((n_read = read(fd_from, buf, BUF_SIZE)) > 0)
+	if (ehdr.e_ident[EI_DATA] == ELFDATA2LSB)
 	{
-		n_written = write(fd_to, buf, n_read);
-		if (n_written != n_read)
-		{
-			dprintf(STDERR_FILENO, "Error: Failed to write to file %s\n", to_filename);
-			exit(99);
-		}
+		printf("  Data:                            2's complement, little endian\n");
 	}
-
-	if (n_read < 0)
+	else
 	{
-		dprintf(STDERR_FILENO, "Error:Failed to read from file %s\n", from_filename);
-		exit(98);
+		printf("  Data:                            2's complement, big endian\n");
 	}
-
-	if (close(fd_from) == -1)
+	printf("  Version:                        %d\n", ehdr.e_ident[EI_VERSION]);
+	printf("  OS/ABI:                          ");
+	switch (ehdr.e_ident[EI_OSABI])
 	{
-		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", from_filename);
-		exit(100);
+		case ELFOSABI_SYSV:
+			printf("UNIX - System V\n");
+			break;
+		case ELFOSABI_LINUX:
+			printf("UNIX - Linux\n");
+			break;
+		case ELFOSABI_NETBSD:
+			printf("UNIX - NetBSD\n");
+			break;
+		default:
+			printf("<unknown>\n");
+			break;
 	}
+	printf("  ABI Version:                  %d\n", ehdr.e_ident[EI_ABIVERSION]);
+	printf("  Type:                            ");
+	close(fd);
+}
+/**
+ * print_elf_header_cont_2 - continued
+ * @filename: name of file
+ */
+void print_elf_header_cont_2(char *filename)
+{
+	int fd;
+	Elf64_Ehdr ehdr;
 
-	if (close(fd_to) == -1)
+	memset(&ehdr, 0, sizeof(ehdr));
+	fd = open(filename, O_RDONLY);
+
+	switch (ehdr.e_type)
 	{
-		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", to_filename);
-		exit(100);
+		case ET_NONE:
+			printf("NONE (Unknown type)\n");
+			break;
+		case ET_REL:
+			printf("REL (Relocatable file)\n");
+			break;
+		case ET_EXEC:
+			printf("EXEC (Executable file)\n");
+			break;
+		case ET_DYN:
+			printf("DYN (Shared object file)\n");
+			break;
+		case ET_CORE:
+			printf("CORE (Core file)\n");
+			break;
+		default:
+			printf("<unknown>\n");
+			break;
 	}
+	printf("  Entry point address:             %p\n", (void *)ehdr.e_entry);
+	close(fd);
 }
 
 /**
- * main - program that copies the content of a file to another file
- * @argc: number of arguments
- * @argv: array of arguments
- * Return: 0 on success, or error code on failure
+ * main - entry point
+ * @argc: number of params
+ * @argv: parameters
+ * Return: 0(Success)
  */
 int main(int argc, char **argv)
 {
-	if (argc != 3)
+	if (argc != 2)
 	{
-		print_usage_and_exit();
+		print_error("Usage: elf_header elf_filename");
 	}
-	copy_file(argv[1], argv[2]);
+	print_elf_header(argv[1]);
+	print_elf_header_cont(argv[1]);
+	print_elf_header_cont_2(argv[1]);
 	return (0);
 }
