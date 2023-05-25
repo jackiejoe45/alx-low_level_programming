@@ -9,9 +9,9 @@
 #define BUF_SIZE 64
 
 /**
-  *  print_error - prints the error
-  *  @message: error message
-  */
+ * print_error - prints the error
+ * @message: error message
+ */
 void print_error(const char *message)
 {
 	fprintf(stderr, "%s\n", message);
@@ -19,9 +19,9 @@ void print_error(const char *message)
 }
 
 /**
-  * print_elf_header - prints the elf header
-  * @fd: filee descriptor
-  */
+ * print_elf_header - prints the elf header
+ * @fd: file descriptor
+ */
 void print_elf_header(int fd)
 {
 	unsigned char buf[BUF_SIZE];
@@ -30,7 +30,7 @@ void print_elf_header(int fd)
 	if (read(fd, buf, sizeof(buf)) != sizeof(buf))
 		print_error("Failed to read ELF header");
 
-	if (memcmp(buf, "\x7f ELF", 4) != 0)
+	if (memcmp(buf, "\x7fELF", 4) != 0)
 		print_error("Not an ELF file");
 
 	printf("ELF Header:\n");
@@ -117,17 +117,17 @@ void print_elf_header(int fd)
 }
 
 /**
-  * main - Entry point
-  * @argc: number of arguments
-  * @argv: arguments
-  * Return: Always 0
-  */
+ * main - Entry point
+ * @argc: number of arguments
+ * @argv: arguments
+ * Return: Always 0
+ */
 int main(int argc, char *argv[])
 {
 	const char *filename;
 	int fd;
 
-		if (argc != 2)
+	if (argc != 2)
 	{
 		print_error("Usage: elf_header elf_filename");
 	}
@@ -146,3 +146,4 @@ int main(int argc, char *argv[])
 	close(fd);
 	return (0);
 }
+
