@@ -8,12 +8,20 @@
 
 #define BUF_SIZE 64
 
+/**
+  *  print_error - prints the error
+  *  @message: error message
+  */
 void print_error(const char *message)
 {
 	fprintf(stderr, "%s\n", message);
 	exit(98);
 }
 
+/**
+  * print_elf_header - prints the elf header
+  * @fd: filee descriptor
+  */
 void print_elf_header(int fd)
 {
 	unsigned char buf[BUF_SIZE];
@@ -108,6 +116,12 @@ void print_elf_header(int fd)
 	printf("\n");
 }
 
+/**
+  * main - Entry point
+  * @argc: number of arguments
+  * @argv: arguments
+  * Return: Always 0
+  */
 int main(int argc, char *argv[])
 {
 	const char *filename;
