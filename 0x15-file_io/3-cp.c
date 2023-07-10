@@ -1,79 +1,85 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
 
-#define BUF_SIZE 1024
+#define BUFFER_SIZE 1024
 
 /**
-  * print_usage_and_exit - as it says
-  */
-void print_usage_and_exit(void)
+ * print_error - handles errors
+ * @message: error message
+ *
+ * Description: This function prints an error message to stderr.
+ */
+void print_error(const char *message)
 {
-	dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-	exit(97);
+	dprintf(STDERR_FILENO, "Error: %s\n", message);
 }
 
 /**
-  * open_file - opens the file with flags and mode
-  * @filename: name of file
-  * @flags: flags
-  * @mode: mode to open file
-  * Return: file descriptor
-  */
-int open_file(const char *filename, int flags, mode_t mode)
+ * exit_error - exits errors
+ * @code: error code
+ * @message: error message
+ *
+ * Description: This function prints an error message and exits the program
+ *              with the specified error code.
+ */
+void exit_error(int code, const char *message)
 {
-	int fd = open(filename, flags, mode);
+	print_error(message);
+	exit(code);
+}
 
-	if (fd == -1)
+/**
+ * copy_file - copies the content of a file to another file
+ * @file_from: path to the source file
+ * @file_to: path to the destination file
+ * Return: 0 on success, -1 on failure
+ *
+ * Description: This function reads the content of the source file and writes
+ *              it to the destination file.
+ */
+int copy_file(const char *file_from, const char *file_to)
+{
+	int file_from_fd, file_to_fd;
+	ssize_t bytes_read, bytes_written;
+	char buffer[BUFFER_SIZE];
+
+	file_from_fd = open(file_from, O_RDONLY);
+	if (file_from_fd == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't open file %s\n", filename);
-		exit(98);
+		exit_error(98, strerror(errno));
 	}
-	return (fd);
-}
-
-/**
-  * copy_file - copies a files
-  * @from_filename: source
-  * @to_filename: destination
-  */
-void copy_file(const char *from_filename, const char *to_filename)
-{
-	int fd_from = open_file(from_filename, O_RDONLY, O_RDONLY);
-	int fd_to = open_file(to_filename, O_WRONLY | O_CREAT | O_TRUNC, 664);
-
-	char buf[BUF_SIZE];
-	ssize_t n_read, n_written;
-
-	while ((n_read = read(fd_from, buf, BUF_SIZE)) > 0)
+	file_to_fd = open(file_to, O_WRONLY | O_CREAT | O_TRUNC,
+			S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+	if (file_to_fd == -1)
 	{
-		n_written = write(fd_to, buf, n_read);
-		if (n_written != n_read)
+		close(file_from_fd);
+		return (-1);
+	}
+
+	while ((bytes_read = read(file_from_fd, buffer, BUFFER_SIZE)) > 0)
+	{
+		bytes_written = write(file_to_fd, buffer, bytes_read);
+		if (bytes_written == -1)
 		{
-			dprintf(STDERR_FILENO, "Error: Failed to write to file %s\n", to_filename);
-			exit(99);
+			close(file_from_fd);
+			close(file_to_fd);
+			return (-1);
 		}
 	}
 
-	if (n_read < 0)
+	close(file_from_fd);
+	close(file_to_fd);
+
+	if (bytes_read == -1)
 	{
-		dprintf(STDERR_FILENO, "Error:Failed to read from file %s\n", from_filename);
-		exit(98);
+		return (-1);
 	}
 
-	if (close(fd_from) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", from_filename);
-		exit(100);
-	}
-
-	if (close(fd_to) == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Failed to close file %s\n", to_filename);
-		exit(100);
-	}
+	return (0);
 }
 
 /**
@@ -81,14 +87,23 @@ void copy_file(const char *from_filename, const char *to_filename)
  * @argc: number of arguments
  * @argv: array of arguments
  * Return: 0 on success, or error code on failure
+ *
+ * Description: This is the entry point of the program. It validates the
+ *              command-line arguments and calls the copy_file function
+ *              to perform the file copying operation.
  */
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
 	if (argc != 3)
 	{
-		print_usage_and_exit();
+		exit_error(97, "Usage: cp file_from file_to");
 	}
-	copy_file(argv[1], argv[2]);
+
+	if (copy_file(argv[1], argv[2]) != 0)
+	{
+		exit_error(99, strerror(errno));
+	}
+
 	return (0);
 }
 
