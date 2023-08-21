@@ -1,10 +1,4 @@
 #!/bin/bash
-
-# Compile each .c file into an object file
-gcc -c -Wall -Werror -fpic *.c
-
-# Create the dynamic library
+gcc -Wall -Wextra -Werror -pedantic -c -fPIC *.c
 gcc -shared -o liball.so *.o
-
-# Clean up temporary object files
-rm -f *.o
+export LD_LIBRARY_PATH=.:$LD_LIBRARY_PATH
